@@ -9,6 +9,13 @@ const groq = new Groq({
 router.post("/ask", async (req, res) => {
   try {
     const { question } = req.body;
+    if (!question || !question.trim()) {
+  return res.status(400).json({ error: "Question required" });
+}
+
+if (question.length > 1000) {
+  return res.status(400).json({ error: "Question too long" });
+}
 
     if (!question) {
       return res.status(400).json({ error: "Question required" });
