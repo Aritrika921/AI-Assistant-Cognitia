@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Groq = require("groq-sdk");
 
-const Query = require("../models/Query");
-
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
@@ -23,14 +21,8 @@ router.post("/ask", async (req, res) => {
 
     const answer = completion.choices[0].message.content;
 
-    try {
-      await Query.create({
-        question,
-        answer,
-      });
-    } catch (dbError) {
-      console.log("DB Save Failed:", dbError.message);
-    }
+    console.log("Question:", question);
+    console.log("Answer:", answer);
 
     res.json({ answer });
 
