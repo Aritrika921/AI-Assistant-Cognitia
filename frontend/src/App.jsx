@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import "./App.css";
 
 function App() {
+  const [started, setStarted] = useState(false);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,9 +16,10 @@ function App() {
       setLoading(true);
       setAnswer("");
 
-      const res = await axios.post("https://ai-assistant-cognitia.vercel.app/api/ask", {
-        question,
-      });
+      const res = await axios.post(
+        "https://ai-assistant-cognitia.vercel.app/api/ask",
+        { question }
+      );
 
       setAnswer(res.data.answer);
     } catch (error) {
@@ -27,27 +29,48 @@ function App() {
     }
   };
 
-  return (
-    <div className="container">
-      <h1>Cognitia AI Assistant</h1>
+  if (!started) {
+    return (
+      <div className="page">
+        <div className="hero">
+          <p className="tag">AI Powered Query Platform</p>
+          <h1>Cognitia AI Assistant</h1>
+          <p className="subtitle">
+            Ask one question. Get one powerful AI response instantly.
+          </p>
 
-      <textarea
-        rows="5"
-        placeholder="Ask one question..."
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-      />
-
-      <button onClick={askAI}>
-        {loading ? "Thinking..." : "Ask AI"}
-      </button>
-
-      {answer && (
-        <div className="response">
-          <h3>Response:</h3>
-          <ReactMarkdown>{answer}</ReactMarkdown>
+          <button className="start-btn" onClick={() => setStarted(true)}>
+            Get Started
+          </button>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="page">
+      <div className="container">
+        <p className="tag">AI Powered Query Platform</p>
+        <h1>Cognitia AI Assistant</h1>
+
+        <textarea
+          rows="5"
+          placeholder="Ask one question..."
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+        />
+
+        <button onClick={askAI} disabled={loading}>
+          {loading ? "Thinking..." : "Ask AI"}
+        </button>
+
+        {answer && (
+          <div className="response">
+            <h3>Response</h3>
+            <ReactMarkdown>{answer}</ReactMarkdown>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -23,14 +23,19 @@ router.post("/ask", async (req, res) => {
 
     const answer = completion.choices[0].message.content;
 
-    await Query.create({
-      question,
-      answer,
-    });
+    try {
+      await Query.create({
+        question,
+        answer,
+      });
+    } catch (dbError) {
+      console.log("DB Save Failed:", dbError.message);
+    }
 
     res.json({ answer });
+
   } catch (error) {
-    console.log(error);
+    console.log("Main Error:", error.message);
     res.status(500).json({ error: "Something went wrong" });
   }
 });
